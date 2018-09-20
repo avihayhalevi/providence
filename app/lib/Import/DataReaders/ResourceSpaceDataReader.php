@@ -160,9 +160,11 @@ class ResourceSpaceDataReader extends BaseDataReader {
 					}
 
 					$o_row = $o_temp;
+					print_r($o_row);
 					$this->opa_row_buf = $o_row;
 					
                 } catch (Exception $e){
+                    print_r($e);
                     continue;
                 }
 

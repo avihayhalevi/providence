@@ -52,3 +52,4 @@ class InterstitialSearchResult extends BaseSearchResult {
 	}
 	# -------------------------------------
 }
+?>

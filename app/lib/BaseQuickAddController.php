@@ -364,7 +364,6 @@
  			    $t_subject->set('lot_id', $vn_lot_id);
  			}
  			
- 			$t_subject->setTransaction($o_trans = new Transaction());
  			$va_opts = array_merge($pa_options, array('ui_instance' => $t_ui));
  			$vb_save_rc = $t_subject->saveBundlesForScreen($this->request->getParameter('screen', pString), $this->request, $va_opts);
 			$this->view->setVar('t_ui', $t_ui);
@@ -394,7 +393,7 @@
  			$va_errors = $this->request->getActionErrors();							// all errors from all sources
  			$va_general_errors = $this->request->getActionErrors('general');		// just "general" errors - ones that are not attached to a specific part of the form
  			
- 			if(($vn_num_errors = (sizeof($va_errors) - sizeof($va_general_errors))) > 0) {
+ 			if(sizeof($va_errors) - sizeof($va_general_errors) > 0) {
  				$va_error_list = array();
  				$vb_no_save_error = false;
  				foreach($va_errors as $o_e) {
@@ -419,7 +418,7 @@
  			$vn_id = $t_subject->getPrimaryKey();
  			
  			$vn_relation_id = null;
- 			if ($vn_id && !$vb_no_save_error) {
+ 			if ($vn_id) {
  				$va_tmp = caProcessRelationshipLookupLabel($t_subject->makeSearchResult($t_subject->tableName(), array($vn_id)), $t_subject);
  				$va_name = array_pop($va_tmp);
  				 			
@@ -435,8 +434,6 @@
  			} else {
  				$va_name = array();
  			}
- 			($vn_num_errors > 0) ? $o_trans->rollback() : $o_trans->commit();
- 			
  			$va_response = array(
  				'status' => (is_array($va_error_list) && sizeof($va_error_list)) ? 10 : 0,
  				'id' => $vn_id,

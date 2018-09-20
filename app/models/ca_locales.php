@@ -88,9 +88,6 @@ BaseModel::$s_ca_models_definitions['ca_locales'] = array(
 );
 
 class ca_locales extends BaseModel {
-
-    use SyncableBaseModel;
-
 	# ---------------------------------
 	# --- Object attribute properties
 	# ---------------------------------
@@ -193,8 +190,6 @@ class ca_locales extends BaseModel {
 	# ------------------------------------------------------
 	public function insert($pa_options=null) {
 		$vm_rc = parent::insert($pa_options);
-		
-		$this->setGUID($pa_options);
 		$this->flushLocaleListCache();
 		return $vm_rc;
 	}

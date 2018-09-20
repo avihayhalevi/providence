@@ -4562,7 +4562,6 @@ create table ca_items_x_tags (
 	
 	moderated_on int unsigned null,
 	moderated_by_user_id int unsigned null references ca_users(user_id),
-    rank int unsigned not null default 0,
 	
 	primary key (relation_id),
 	key i_row_id (row_id),
@@ -4571,8 +4570,7 @@ create table ca_items_x_tags (
 	key i_user_id (user_id),
 	key i_access (access),
 	key i_created_on (created_on),
-	key i_moderated_on (moderated_on),
-	key i_rank (rank)
+	key i_moderated_on (moderated_on)
 ) engine=innodb CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 
@@ -6980,4 +6978,4 @@ create table ca_schema_updates (
 ) engine=innodb CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 /* Indicate up to what migration this schema definition covers */
-INSERT IGNORE INTO ca_schema_updates (version_num, datetime) VALUES (155, unix_timestamp());
+INSERT IGNORE INTO ca_schema_updates (version_num, datetime) VALUES (154, unix_timestamp());

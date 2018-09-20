@@ -38,7 +38,6 @@
 	
 	if ($o_zip = $this->getVar('zip_stream')) {
 		$o_zip->stream();
-		exit();
 	} elseif(file_exists($vs_path = $this->getVar('archive_path'))) {
 		$o_fp = @fopen($vs_path,"rb");
 		while(is_resource($o_fp) && !feof($o_fp)) {

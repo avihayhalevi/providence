@@ -1,3 +1,6 @@
+<?php
+	
+?>
 <h1><?php print _t('Check in'); ?></h1>
 
 <div class=""caLibraryUIContainer">
@@ -29,9 +32,6 @@
 			</ol>
 		</div>
 	</form>
-	
-	<div class="editorBottomPadding"><!-- empty --></div>
-	<div class="editorBottomPadding"><!-- empty --></div>
 </div>
 
 <script type="text/javascript">

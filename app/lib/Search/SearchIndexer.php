@@ -214,6 +214,8 @@ class SearchIndexer extends SearchBase {
 				continue;
 			}
 
+			$o_db->query("ALTER TABLE {$vs_table} DISABLE KEYS");
+
 			$qr_all = $o_db->query("SELECT ".$t_instance->primaryKey()." FROM {$vs_table}");
 
 			$vn_num_rows = $qr_all->numRows();
@@ -279,7 +281,7 @@ class SearchIndexer extends SearchBase {
 				$vn_c++;
 			}
 			$qr_all->free();
-			// Leaving this statement in to 'repair' any tables that had their keys disabled by a previous failed reindex.
+			
 			$o_db->query("ALTER TABLE {$vs_table} ENABLE KEYS");
 			
 			unset($t_instance);
@@ -2624,7 +2626,7 @@ class SearchIndexer extends SearchBase {
 				// process joins
 				$vn_num_queries_required = 1;
 				foreach($va_joins as $vn_i => $va_join_list) {
-					if(is_array($va_join_list) && (sizeof($va_join_list) > $vn_num_queries_required)) {
+					if(sizeof($va_join_list) > $vn_num_queries_required) {
 						$vn_num_queries_required = sizeof($va_join_list);
 					}
 				}

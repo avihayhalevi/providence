@@ -75,9 +75,11 @@
 		 */
 
         public function hookPeriodicTask(){
-			// Get the Public url
+
+            // Get the Public url
             $publicURL = $this->opo_config->get('urlRoot').$this->opo_config->get('rssPublicPath');
-			// Get the target directory
+
+            // Get the target directory
             $rssDirectory = $this->opo_config->get('rssAbsolutePath');
             // Check if that directory exists and if not, create it
             if(!file_exists($rssDirectory)){
@@ -115,7 +117,7 @@
             $ve_mainLink = $xml->createElement("link", $this->opo_config->get('urlRoot').$this->opo_config->get('rssPublicPath').$rssFile.".xml");
             $channel->appendChild($ve_mainLink);
             foreach($va_collections as $vs_collection_code => $va_collection){
-            	$vs_file_name = $this->getCSVExport($va_collection, $vs_collection_code, $rssDirectory, $va_collection['recordtype']);
+                $vs_file_name = $this->getCSVExport($va_collection, $vs_collection_code, $rssDirectory, $va_collection['type']);
 
                 $tempItem = $xml->createElement('item');
                 foreach($va_collection['rss_fields'] as $vs_field => $vs_value){
@@ -171,11 +173,14 @@
 			$vs_query = $va_collection['filterQuery'];
 			$vf_exporter = $va_collection['exporter'];
 			$vs_exporter_dir = $va_collection['exporter_directory'];
-			// Search collections get all specimens flagged for publication
+			
+            // Search collections get all specimens flagged for publication
             $o_search = new ObjectSearch();
-            $qr_search_result = $o_search->search($vs_query);
-            if($vs_type === 'multimedia'){
+            if($vs_type != 'multimedia'){
+                $qr_search_result = $o_search->search($vs_query);
+            } else {
                 $va_mediaIDs = [];
+                $qr_search_result = $o_search->search($vs_query);
                 while($qr_search_result->nextHit()){
                     $vo_record = new ca_objects($qr_search_result->get("object_id"));
                     $va_repIDs = $vo_record->getRepresentationIDs();
@@ -185,7 +190,7 @@
                     $qr_search_result = caMakeSearchResult("ca_object_representations", $va_mediaIDs);
                 }
             }
-            $vs_file_name = $vs_collection_code.$vs_file_name_extension;
+			$vs_file_name = $vs_collection_code.$vs_file_name_extension;
             // Move current export file to archive, labelling it with the previous week's date
             if(!file_exists($vs_rss_dir.'exportArchive')){
                 mkdir($vs_rss_dir.'exportArchive');
@@ -195,11 +200,11 @@
                 rename($vs_rss_dir.$vs_file_name, $vs_rss_dir.'exportArchive/'.$vs_file_mod_time.$vs_file_name);
             }
             // Export new data
-            print "Exporting data for {$vs_collection_code}\n";
             $va_errors = [];
             $vo_exporter = ca_data_exporters::loadExporterFromFile($vs_exporter_dir.'/'.$vf_exporter, $va_errors);
             $vs_exporter_code = $vo_exporter->get('exporter_code');
             ca_data_exporters::exportRecordsFromSearchResult($vs_exporter_code, $qr_search_result, $vs_rss_dir.$vs_file_name, ['logLevel' => KLogger::DEBUG, 'logDirectory' => __CA_BASE_DIR__.'/app/plugins/iDigBioExport/logs', 'showCLIProgressBar' => True]);
-			return $vs_file_name;
+
+            return $vs_file_name;
         }
 	}

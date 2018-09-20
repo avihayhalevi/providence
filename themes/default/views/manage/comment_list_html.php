@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2018 Whirl-i-Gig
+ * Copyright 2009-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -54,7 +54,7 @@
 				<thead>
 					<tr>
 						<th class="list-header-unsorted">
-							<?php print _t('Item'); ?>
+							<?php print _t('Author'); ?>
 						</th>
 						<th class="list-header-unsorted">
 							<?php print _t('Comment'); ?>
@@ -66,10 +66,10 @@
 							<?php print _t('Rating'); ?>
 						</th>
 						<th class="list-header-unsorted">
-							<?php print _t('Author'); ?>
+							<?php print _t('Date'); ?>
 						</th>
 						<th class="list-header-unsorted">
-							<?php print _t('Date'); ?>
+							<?php print _t('Commented On'); ?>
 						</th>
 						<th class="{sorter: false} list-header-nosort"><?php print _t('Select'); ?></th>
 					</tr>
@@ -80,7 +80,15 @@
 ?>
 					<tr>
 						<td>
-							<?php print caEditorLink($this->request, $va_comment['commented_on'], '', $va_comment['table_num'], $va_comment['row_id']); ?>
+							<div class="caUserCommentsListName">
+<?php 
+							if($va_comment['user_id']){
+								print $va_comment['fname']." ".$va_comment['lname']."<br/>".$va_comment['user_email'];
+							}else{
+								print $va_comment['name']."<br/>".$va_comment['email'];
+							}
+?>
+							</div>
 						</td>
 						<td>
 							<div class="caUserCommentsListComment">
@@ -100,18 +108,10 @@
 							<?php print ($va_comment['rating']) ? $va_comment['rating'] : "-"; ?>
 						</td>
 						<td>
-							<div class="caUserCommentsListName">
-<?php 
-							if($va_comment['user_id']){
-								print $va_comment['fname']." ".$va_comment['lname']." (".$va_comment['user_email'].")";
-							}else{
-								print $va_comment['name']." (".$va_comment['email'].")";
-							}
-?>
-							</div>
+							<?php print $va_comment['created_on']; ?>
 						</td>
 						<td>
-							<?php print $va_comment['created_on']; ?>
+							<?php print $va_comment['commented_on']; ?>
 						</td>
 						<td>
 							<input type="checkbox" name="comment_id[]" value="<?php print $va_comment['comment_id']; ?>">

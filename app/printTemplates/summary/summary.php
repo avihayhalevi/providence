@@ -31,7 +31,6 @@
  * @pageSize letter
  * @pageOrientation portrait
  * @tables *
- * @generic 1
  *
  * @marginTop 0.75in
  * @marginLeft 0.25in

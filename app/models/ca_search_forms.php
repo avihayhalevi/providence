@@ -971,6 +971,7 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
 				}
 			}
 		}
+//print_R($va_available_bundles);
 
 		//
 		// access points

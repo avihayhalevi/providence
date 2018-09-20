@@ -180,14 +180,12 @@ class AuthenticationManager {
 	 *
 	 * @param string $ps_username
 	 * @param string $ps_password
-	 * @param array $pa_options Options include:
-	 *		minimal = Return minimal info, at least the user name. [Default is false]
 	 * @return array
 	 */
-	public static function getUserInfo($ps_username, $ps_password, $pa_options=null) {
+	public static function getUserInfo($ps_username, $ps_password) {
 		self::init();
 
-		if ($vn_rc = self::$g_authentication_adapter->getUserInfo($ps_username, $ps_password, $pa_options)) {
+		if ($vn_rc = self::$g_authentication_adapter->getUserInfo($ps_username, $ps_password)) {
 			return $vn_rc;
 		}
 
@@ -212,19 +210,6 @@ class AuthenticationManager {
 		self::init();
 
 		if ($vn_rc = self::$g_authentication_adapter->deauthenticate($pa_options)) {
-			return $vn_rc;
-		}
-
-		return null;
-	}
-	
-	/**
-	 * Callback handler for adapters that require a callback for control flow (Eg. Okta)
-	 */
-	public static function callback($pa_options=null) {
-		self::init();
-
-		if (method_exists(self::$g_authentication_adapter, "callback") && ($vn_rc = self::$g_authentication_adapter->callback($pa_options))) {
 			return $vn_rc;
 		}
 
