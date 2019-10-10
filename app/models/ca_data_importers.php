@@ -1266,6 +1266,14 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 		$pn_file_number 		= caGetOption('fileNumber', $pa_options, 0);
 		$pn_number_of_files 	= caGetOption('numberOfFiles', $pa_options, 1);
 		
+		//insert museum id
+		global $AUTH_CURRENT_USER_ID;
+		$vn_user_id = caGetOption('user_id', $pa_options, $AUTH_CURRENT_USER_ID, array('castTo' => 'int'));
+			$t_user = new ca_users($vn_user_id);
+			if ($t_user->getPrimaryKey()) {
+				$t_museum_id =  $t_user->get('museum_id');
+			}
+
 		$t_add_to_set = null;
 		if ($ps_add_to_set 	= caGetOption('addToSet', $pa_options, null)) {
 			if (!($t_add_to_set = ca_sets::find(['set_code' => $ps_add_to_set], ['returnAs' => 'firstModelInstance']))) {
@@ -1746,7 +1754,7 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 						case 'merge_on_idno_with_replace':
 							if (!$vb_idno_is_template) {
 								$va_ids = call_user_func_array($t_subject->tableName()."::find", array(
-									array_merge($va_base_criteria, array($t_subject->getProperty('ID_NUMBERING_ID_FIELD') => $vs_idno, 'deleted' => 0)),
+									array_merge($va_base_criteria, array($t_subject->getProperty('ID_NUMBERING_ID_FIELD') => $vs_idno, 'deleted' => 0, 'museum_id'=>$t_museum_id)),
 									array('returnAs' => 'ids', 'purifyWithFallback' => true, 'transaction' => $o_trans)
 								));
 								if (is_array($va_ids) && (sizeof($va_ids) > 0)) {
@@ -1759,7 +1767,7 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 						case 'merge_on_preferred_labels':
 						case 'merge_on_preferred_labels_with_replace':
 							$va_ids = call_user_func_array($t_subject->tableName()."::find", array(
-								array_merge($va_base_criteria, array('preferred_labels' => $va_pref_label_values, 'deleted' => 0)),
+								array_merge($va_base_criteria, array('preferred_labels' => $va_pref_label_values, 'deleted' => 0,'museum_id'=>$t_museum_id)),
 								array('returnAs' => 'ids', 'purifyWithFallback' => true, 'transaction' => $o_trans)
 							));
 							if (is_array($va_ids) && (sizeof($va_ids) > 0)) {
@@ -1772,7 +1780,7 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 						case 'overwrite_on_idno':
 							if (!$vb_idno_is_template && $vs_idno) {
 								$va_ids = call_user_func_array($t_subject->tableName()."::find", array(
-									array_merge($va_base_criteria, array($t_subject->getProperty('ID_NUMBERING_ID_FIELD') => $vs_idno, 'deleted' => 0)),
+									array_merge($va_base_criteria, array($t_subject->getProperty('ID_NUMBERING_ID_FIELD') => $vs_idno, 'deleted' => 0, 'museum_id'=>$t_museum_id)),
 									array('returnAs' => 'ids', 'purifyWithFallback' => true, 'transaction' => $o_trans)
 								));
 								if (is_array($va_ids) && (sizeof($va_ids) > 0)) {
@@ -1792,7 +1800,7 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 							if ($vs_existing_record_policy == 'overwrite_on_idno') { break; }	// fall through if overwrite_on_idno_and_preferred_labels
 						case 'overwrite_on_preferred_labels':
 							$va_ids = call_user_func_array($t_subject->tableName()."::find", array(
-								array_merge($va_base_criteria, array('preferred_labels' => $va_pref_label_values, 'deleted' => 0)),
+								array_merge($va_base_criteria, array('preferred_labels' => $va_pref_label_values, 'deleted' => 0, 'museum_id'=>$t_museum_id)),
 								array('returnAs' => 'ids', 'purifyWithFallback' => true, 'transaction' => $o_trans)
 							));
 							if (is_array($va_ids) && (sizeof($va_ids) > 0)) {
@@ -2339,6 +2347,11 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 						}
 						$t_subject->set($vs_mandatory_field, $va_mandatory_field_values[$vs_mandatory_field], $va_opts);
 					}
+					
+					if (!$t_subject->get('museum_id')){
+						$t_subject->set('museum_id', $t_museum_id);
+					}
+
 					try {
 						$t_subject->insert(['queueIndexing' => true]);
 					} catch (DatabaseException $e) {

@@ -7169,7 +7169,21 @@ class BaseModel extends BaseObject {
 						}
 					}
 					
-			
+					//museum fillter
+					if ($this->hasField('museum_id')){
+						global $AUTH_CURRENT_USER_ID;
+						$vn_user_id = caGetOption('user_id', $pa_options, $AUTH_CURRENT_USER_ID, array('castTo' => 'int'));
+						$t_user = new ca_users($vn_user_id);
+						if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+							if (is_array($va_additional_table_wheres) && (sizeof($va_additional_table_wheres) > 0)) {
+								$vs_additional_wheres = ' AND ('.join(' AND ', $va_additional_table_wheres).') AND ('.$vs_table_name.'.museum_id = '.$t_user->get('museum_id').' OR '.$vs_table_name.'.museum_id = 1)';
+							} 
+							else {
+								$vs_additional_wheres = ' AND ('.$vs_table_name.'.museum_id = '.$t_user->get('museum_id').' OR '.$vs_table_name.'.museum_id = 1)';
+							}
+						}
+					}
+
 					$vs_deleted_sql = '';
 					if ($this->hasField('deleted') && (!isset($pa_options['returnDeleted']) || (!$pa_options['returnDeleted']))) {
 						$vs_deleted_sql = " AND ({$vs_table_name}.deleted = 0)";
@@ -7480,6 +7494,17 @@ class BaseModel extends BaseObject {
 			$va_additional_child_join_conditions[] = "p2.deleted = 0";
 		}
 		
+		//museum fillter
+		if ($this->hasField('museum_id')){
+			global $AUTH_CURRENT_USER_ID;
+			$vn_user_id = caGetOption('user_id', $pa_options, $AUTH_CURRENT_USER_ID, array('castTo' => 'int'));
+			$t_user = new ca_users($vn_user_id);
+			if ($t_user->getPrimaryKey()) {
+				$user_museum_id = ($t_user->get('museum_id'))?" or {$vs_table_name}.museum_id = ".$t_user->get('museum_id'):"";
+				$va_additional_table_wheres[] = " ({$vs_table_name}.museum_id = 1 {$user_museum_id})";
+			}
+		}
+
 		if ($this->isHierarchical()) {
 			if (!$pn_id) {
 				if (!($pn_id = $this->getPrimaryKey())) {
@@ -7736,6 +7761,17 @@ class BaseModel extends BaseObject {
 			$va_additional_table_wheres[] = "({$vs_table_name}.deleted = 0)";
 		}
 		
+		//museum fillter
+		if ($this->hasField('museum_id')){
+			global $AUTH_CURRENT_USER_ID;
+			$vn_user_id = caGetOption('user_id', $pa_options, $AUTH_CURRENT_USER_ID, array('castTo' => 'int'));
+			$t_user = new ca_users($vn_user_id);
+			if ($t_user->getPrimaryKey()) {
+				$user_museum_id = ($t_user->get('museum_id'))?" or {$vs_table_name}.museum_id = ".$t_user->get('museum_id'):"";
+				$va_additional_table_wheres[] = " ({$vs_table_name}.museum_id = 1 {$user_museum_id})";
+			}
+		}
+
 		if ($this->isHierarchical()) {
 			if (!$pn_id) {
 				if (!($pn_id = $this->getPrimaryKey())) {
@@ -11069,7 +11105,18 @@ $pa_options["display_form_field_tips"] = true;
 				$va_wheres[] = "(t.{$vs_type_field_name} IN (".join(',', $va_type_ids).')'.($this->getFieldInfo($vs_type_field_name, 'IS_NULL') ? " OR t.{$vs_type_field_name} IS NULL" : '').')';
 			}
 		}
-		
+
+		if ($this->hasField('museum_id')){
+			global $AUTH_CURRENT_USER_ID;
+			$vn_user_id = caGetOption('user_id', $pa_options, $AUTH_CURRENT_USER_ID, array('castTo' => 'int'));
+			$t_user = new ca_users($vn_user_id);
+			if ($t_user->getPrimaryKey()) {
+				if($t_user->get('museum_id')){
+					$va_wheres[] = "museum_id = ".$t_user->get('museum_id');
+				}
+			}
+		}
+
 		if (method_exists($this, 'getSourceFieldName') && ($vs_source_id_field_name = $this->getSourceFieldName())) {
 			$va_source_ids = caMergeSourceRestrictionLists($this, $pa_options);
 			if (is_array($va_source_ids) && sizeof($va_source_ids)) {
@@ -11402,7 +11449,18 @@ $pa_options["display_form_field_tips"] = true;
 		if (is_array($pa_access) && sizeof($pa_access) && $this->hasField('access')) {
 			$va_wheres[] = "(access IN (".join(',', $pa_access)."))";
 		}
-		
+
+		if ($this->hasField('museum_id')){
+			global $AUTH_CURRENT_USER_ID;
+			$vn_user_id = caGetOption('user_id', $pa_options, $AUTH_CURRENT_USER_ID, array('castTo' => 'int'));
+			$t_user = new ca_users($vn_user_id);
+			if ($t_user->getPrimaryKey()) {
+				if($t_user->get('museum_id')){
+					$va_wheres[] = "museum_id = ".$t_user->get('museum_id');
+				}
+			}
+		}
+
 		if($this->hasField('deleted')) {
 			$va_wheres[] = '(deleted = 0)';
 		}
@@ -11731,6 +11789,18 @@ $pa_options["display_form_field_tips"] = true;
 		if (is_array($pa_check_access) && sizeof($pa_check_access) && $t_instance->hasField('access')) {
 			$va_sql_wheres[] = "({$vs_table}.access IN (?))";
 			$va_sql_params[] = $pa_check_access;
+		}
+
+		//museum fillter
+		if ($t_instance->hasField('museum_id')){
+			global $AUTH_CURRENT_USER_ID;
+			if($AUTH_CURRENT_USER_ID){
+				$t_user = new ca_users($AUTH_CURRENT_USER_ID);
+				if ($t_user->getPrimaryKey()) {
+					$user_museum_id = ($t_user->get('museum_id'))?" or {$vs_table}.museum_id = ".$t_user->get('museum_id'):"";
+					$va_sql_wheres[] = " ({$vs_table}.museum_id = 1 {$user_museum_id})";
+				}
+			}
 		}
 		
 		$vs_deleted_sql = '';
@@ -12279,6 +12349,17 @@ $pa_options["display_form_field_tips"] = true;
 			$va_wheres[] = "({$vs_related_table}.access IN (".join(',', $pa_options['checkAccess'])."))";
 		}
 
+		if ($this->hasField('museum_id')){
+			global $AUTH_CURRENT_USER_ID;
+			$vn_user_id = caGetOption('user_id', $pa_options, $AUTH_CURRENT_USER_ID, array('castTo' => 'int'));
+			$t_user = new ca_users($vn_user_id);
+			if ($t_user->getPrimaryKey()) {
+				if($t_user->get('museum_id')){
+					$va_wheres[] = "museum_id = ".$t_user->get('museum_id');
+				}
+			}
+		}
+		
 		if ((!isset($pa_options['showDeleted']) || !$pa_options['showDeleted']) && $t_rel_item->hasField('deleted')) {
 			$va_wheres[] = "({$vs_related_table}.deleted = 0)";
 		}

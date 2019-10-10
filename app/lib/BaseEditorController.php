@@ -225,14 +225,18 @@ class BaseEditorController extends ActionController {
 	    if (!caValidateCSRFToken($this->request, null, ['notifications' => $this->notification])) {
 	    	$this->Edit();
 	    	return;
-	    }
+		}
 	    
 		list($vn_subject_id, $t_subject, $t_ui, $vn_parent_id, $vn_above_id, $vn_after_id, $vs_rel_table, $vn_rel_type_id, $vn_rel_id) = $this->_initView($pa_options);
 		/** @var $t_subject BundlableLabelableBaseModelWithAttributes */
 		if (!is_array($pa_options)) { $pa_options = array(); }
 
 		if (!$this->_checkAccess($t_subject)) { return false; }
-
+		//set user museum to object
+		if (!$t_subject->getPrimaryKey()){
+			$t_subject->set('museum_id',(int)$this->request->user->get('museum_id'));
+			$pa_options['museum_id'] = (int)$this->request->user->get('museum_id');
+		}
 		if($vn_above_id) {
 			// Convert "above" id (the id of the record we're going to make the newly created record parent of
 			if (($t_instance = Datamodel::getInstanceByTableName($this->ops_table_name)) && $t_instance->load($vn_above_id)) {
@@ -1799,6 +1803,12 @@ class BaseEditorController extends ActionController {
 	 * @return bool True if post-deletion cleanup was successful, false if not
 	 */
 	protected function _checkAccess($pt_subject, $pa_options=null) {
+		if ((!isset($pa_options['museum_id']) || !$pa_options['museum_id']) && $pt_subject->hasField('museum_id') && $pt_subject->get($pt_subject->primaryKey())){
+			if ($pt_subject->get('museum_id') !=(int)$this->request->user->get('museum_id') && $pt_subject->get('museum_id') !=1){
+				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
+				return;
+			}
+		}
 		//
 		// Is record deleted?
 		//

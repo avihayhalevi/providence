@@ -787,11 +787,22 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			if ($this->hasField('deleted')) {
 				$vs_deleted_sql = " AND (".$this->tableName().".deleted = 0)";
 			}
+
+			$vs_museum_sql = '';
+			if ($this->hasField('museum_id')) {
+				global $AUTH_CURRENT_USER_ID;
+				if($AUTH_CURRENT_USER_ID){
+					$t_user = new ca_users($AUTH_CURRENT_USER_ID);
+					if ($t_user->getPrimaryKey()) {
+						$vs_museum_sql = " AND (".$this->tableName().".museum_id = ".$t_user->get('museum_id').")";
+					}
+				}
+			}
 			
 			$qr_idno = $o_db->query("
 				SELECT ".$this->primaryKey()." 
 				FROM ".$this->tableName()." 
-				WHERE {$vs_idno_field} = ? {$vs_remove_self_sql} {$vs_idno_context_sql} {$vs_deleted_sql}
+				WHERE {$vs_idno_field} = ? {$vs_remove_self_sql} {$vs_idno_context_sql} {$vs_deleted_sql} {$vs_museum_sql}
 			", $ps_idno);
 			
 			$va_ids = array();

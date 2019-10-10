@@ -277,6 +277,12 @@ class SearchEngine extends SearchBase {
 				$vb_no_types = true; 
 			}
 			
+			if ((!isset($pa_options['museum_id']) || !$pa_options['museum_id']) && $t_table->hasField('museum_id')) {
+				$vn_user_id = (isset($pa_options['user_id']) && (int)$pa_options['user_id']) ?  (int)$pa_options['user_id'] : (int)$AUTH_CURRENT_USER_ID;
+				$cu_user = new ca_users($vn_user_id);
+				$this->addResultFilter($this->ops_tablename.'.museum_id', 'IN', join(",",array(1,$cu_user->get('museum_id'))));
+			}
+
 			if (!$vb_no_types) {
 				// Filter on source
 				if (is_array($va_source_ids = $this->getSourceRestrictionList())) {

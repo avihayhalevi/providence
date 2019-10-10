@@ -535,6 +535,13 @@
 				$t_rep->set('access', $pn_access);
 				$t_rep->set('media', $ps_media_path, $pa_options);
 		
+				global $AUTH_CURRENT_USER_ID;
+				$vn_user_id = caGetOption('user_id', $pa_options, $AUTH_CURRENT_USER_ID, array('castTo' => 'int'));
+				$t_user = new ca_users($vn_user_id);
+				if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+					$t_rep->set('museum_id',$t_user->get('museum_id'));
+				}
+
 				if ($o_idno = $t_rep->getIDNoPlugInInstance()) {
 					$t_rep->setIdnoWithTemplate($o_idno->makeTemplateFromValue(''));
 				}

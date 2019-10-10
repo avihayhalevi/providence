@@ -356,6 +356,14 @@ BaseModel::$s_ca_models_definitions['ca_objects'] = array(
 			'LIST_CODE' => 'object_circulation_statuses',
 			'LABEL' => _t('Circulation status'), 'DESCRIPTION' => _t('Indicates circulation status of the object.')
 		),
+		'museum_id' => array(
+			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_HIDDEN, 
+			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => false,
+			'DONT_USE_AS_BUNDLE' => true,
+			'DEFAULT' => 1,
+			'LABEL' => _t('museum'), 'DESCRIPTION' => _t('Number of the museum that the collection is belongs to')
+		)
 	)
 );
 

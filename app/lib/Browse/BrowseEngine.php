@@ -1252,6 +1252,11 @@
                                             }
                                         }
 
+										//museum fillter 
+										if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+											$va_wheres[] = $t_item->tableName().".museum_id IN (".$t_user->get('museum_id').",1)";
+										}
+
 										$vs_join_sql = join("\n", $va_joins);
 										$vs_where_sql = '';
 										if (is_array($va_wheres) && sizeof($va_wheres) > 0) {
@@ -1827,6 +1832,11 @@
 											$va_wheres[] = "(".$t_item_rel->tableName().".type_id NOT IN (".join(',', $va_exclude_relationship_types)."))";
 										}
 
+										//museum fillter 
+										if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+											$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+										}
+
 										$vs_where_sql = '';
 										if (is_array($va_wheres) && sizeof($va_wheres) > 0) {
 											$vs_where_sql = ' AND '.join(' AND ', $va_wheres);
@@ -2159,6 +2169,11 @@
 								if (is_array($va_exclude_types) && sizeof($va_exclude_types)) {
 									$va_wheres[] = "{$va_restrict_to_types}.type_id IN (".join(",", $va_exclude_types).")";
 								}
+								
+								//museum fillter 
+								if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+									$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+								}
 
 								$vs_sql = "
 									SELECT count(*) c, {$vs_browse_table_name}.{$idno_fld}
@@ -2334,7 +2349,11 @@
 						if (is_array($omit_child_records_for_types) && sizeof($omit_child_records_for_types) && $t_item->hasField('parent_id')) {
 							$va_wheres[] = "(({$this->ops_browse_table_name}.parent_id IS NULL) OR ({$this->ops_browse_table_name}.parent_id IS NOT NULL AND {$this->ops_browse_table_name}.type_id NOT IN (".join(",", $omit_child_records_for_types).")))";
 						}
-
+						
+						//museum fillter 
+						if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+							$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+						}
 
 						if ((isset($pa_options['limitToModifiedOn']) && $pa_options['limitToModifiedOn'])) {
 							$o_tep = new TimeExpressionParser();
@@ -2413,7 +2432,12 @@
         
                     if (is_array($omit_child_records_for_types) && sizeof($omit_child_records_for_types) && $t_item->hasField('parent_id')) {
                         $va_wheres[] = "(({$this->ops_browse_table_name}.parent_id IS NULL) OR ({$this->ops_browse_table_name}.parent_id IS NOT NULL AND {$this->ops_browse_table_name}.type_id NOT IN (".join(",", $omit_child_records_for_types).")))";
-                    }
+					}
+
+					//museum fillter 
+					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+						$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+					}
 
 					if ((isset($pa_options['limitToModifiedOn']) && $pa_options['limitToModifiedOn'])) {
 						$o_tep = new TimeExpressionParser();
@@ -2929,6 +2953,13 @@
 									)";
 								}
 							}
+
+							//museum fillter 
+							$t_user = new ca_users($vn_user_id);
+							if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+								$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+							}
+							
 							$vs_join_sql = join("\n", $va_joins);
 
 							$vs_where_sql = '';
@@ -3109,6 +3140,13 @@
 									)";
 								}
 							}
+
+							//museum fillter 
+							$t_user = new ca_users($vn_user_id);
+							if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+								$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+							}
+
 							$vs_join_sql = join("\n", $va_joins);
 
 							$vs_where_sql = '';
@@ -3270,6 +3308,12 @@
 						}
 					}
 
+					//museum fillter 
+					$t_user = new ca_users($vn_user_id);
+					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+						$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+					}
+
 					$vs_join_sql = join("\n", $va_joins);
 
 					if (is_array($va_where_sql) && sizeof($va_where_sql)) {
@@ -3427,6 +3471,12 @@
 								".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
 							)";
 						}
+					}
+
+					//museum fillter 
+					$t_user = new ca_users($vn_user_id);
+					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+						$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
 					}
 
 					$vs_join_sql = join("\n", $va_joins);
@@ -3781,6 +3831,12 @@
 						}
 					}
 
+					//museum fillter 
+					$t_user = new ca_users($vn_user_id);
+					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+						$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+					}
+
 					$vs_join_sql = join("\n", $va_joins);
 
 					if (is_array($va_wheres) && sizeof($va_wheres) && ($vs_where_sql = join(' AND ', $va_wheres))) {
@@ -3978,6 +4034,12 @@
 							}
 						}
 
+						//museum fillter 
+						$t_user = new ca_users($vn_user_id);
+						if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+							$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+						}
+
 						$vs_join_sql = join("\n", $va_joins);
 
 						if (is_array($va_wheres) && sizeof($va_wheres) && ($vs_where_sql = join(' AND ', $va_wheres))) {
@@ -4158,6 +4220,11 @@
 								}
 							}
 
+							//museum fillter 
+							$t_user = new ca_users($vn_user_id);
+							if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+								$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+							}
 
 							if (is_array($va_wheres) && sizeof($va_wheres) && ($vs_where_sql = join(' AND ', $va_wheres))) {
 								$vs_where_sql = '('.$vs_where_sql.')';
@@ -4265,6 +4332,12 @@
 											".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
 										)";
 									}
+								}
+
+								//museum fillter 
+								$t_user = new ca_users($vn_user_id);
+								if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+									$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
 								}
 
 								$vs_join_sql = join("\n", $va_joins);
@@ -4423,6 +4496,12 @@
 						}
 					}
 
+					//museum fillter 
+					$t_user = new ca_users($vn_user_id);
+					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+						$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+					}
+
 					$vs_join_sql = join("\n", $va_joins);
 
 					if (is_array($va_wheres) && sizeof($va_wheres) && ($vs_where_sql = join(' AND ', $va_wheres))) {
@@ -4542,6 +4621,12 @@
 								".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
 							)";
 						}
+					}
+
+					//museum fillter 
+					$t_user = new ca_users($vn_user_id);
+					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+						$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
 					}
 
 					$vs_join_sql = join("\n", $va_joins);
@@ -4692,6 +4777,12 @@
 								".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
 							)";
 						}
+					}
+
+					//museum fillter 
+					$t_user = new ca_users($vn_user_id);
+					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+						$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
 					}
 
 					$vs_join_sql = join("\n", $va_joins);
@@ -4900,6 +4991,12 @@
 								".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
 							)";
 						}
+					}
+
+					//museum fillter 
+					$t_user = new ca_users($vn_user_id);
+					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+						$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
 					}
 
 					$vs_where_sql = '';
@@ -5255,6 +5352,12 @@
 								".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
 							)";
 						}
+					}
+
+					//museum fillter 
+					$t_user = new ca_users($vn_user_id);
+					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+						$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
 					}
 
 					$vs_where_sql = '';
@@ -5938,6 +6041,13 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							)";
 						}
 					}
+
+					//museum fillter 
+					$t_user = new ca_users($vn_user_id);
+					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+						$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+					}
+
 					$vs_join_sql = join("\n", $va_joins);
 
 					$vs_where_sql = '';

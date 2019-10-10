@@ -589,12 +589,20 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 				$va_params[] = $pa_check_access;
 			}
 			
+			$museum_access ='';
+			global $AUTH_CURRENT_USER_ID;
+			$vn_user_id = caGetOption('user_id', $pa_options, $AUTH_CURRENT_USER_ID, array('castTo' => 'int'));
+			$t_user = new ca_users($vn_user_id);
+			if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+				$museum_access = "AND (cli.museum_id in (1 ,".$t_user->get('museum_id')."))";
+			}
+
 			$vs_sql = "
 				SELECT clil.*, cli.*
 				FROM ca_list_items cli
 				LEFT JOIN ca_list_item_labels AS clil ON cli.item_id = clil.item_id
 				WHERE
-					(cli.deleted = 0) AND ((clil.is_preferred = 1) OR (clil.is_preferred IS NULL)) AND (cli.list_id = ?) {$vs_type_sql} {$vs_direct_children_sql} {$vs_hier_sql} {$vs_enabled_sql} {$vs_access_sql}
+					(cli.deleted = 0) AND ((clil.is_preferred = 1) OR (clil.is_preferred IS NULL)) AND (cli.list_id = ?) {$vs_type_sql} {$vs_direct_children_sql} {$vs_hier_sql} {$vs_enabled_sql} {$vs_access_sql}{$museum_access}
 				{$vs_order_by}
 				{$vs_limit_sql}
 			";

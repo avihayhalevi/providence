@@ -189,6 +189,14 @@ BaseModel::$s_ca_models_definitions['ca_collections'] =  array(
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => 'View count', 'DESCRIPTION' => 'Number of views for this record.'
+		),
+		'museum_id' => array(
+			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_HIDDEN, 
+			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => false,
+			'DONT_USE_AS_BUNDLE' => true,
+			'DEFAULT' => 1,
+			'LABEL' => _t('museum'), 'DESCRIPTION' => _t('Number of the museum that the collection is belongs to')
 		)
 	)
 );

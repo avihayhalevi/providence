@@ -165,6 +165,13 @@ BaseModel::$s_ca_models_definitions['ca_users'] = array(
 				'DEFAULT' => '',
 				'LABEL' => _t('Confirmation key'), 'DESCRIPTION' => _t('Confirmation key used for email verification.'),
 				'BOUNDS_LENGTH' => array(0,32)
+		),
+		'museum_id' => array(
+			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
+			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => false, 
+			'DEFAULT' => 1,
+			'LABEL' => _t('museum'), 'DESCRIPTION' => _t('Number of the museum that the collection is belongs to')
 		)
  	)
 );
