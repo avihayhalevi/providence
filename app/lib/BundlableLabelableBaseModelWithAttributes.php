@@ -3423,6 +3423,15 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 							$this->set($vs_f, $vs_v);
 							break;
 					}
+					if ($this->hasField('museum_id')) {
+						global $AUTH_CURRENT_USER_ID;
+						if($AUTH_CURRENT_USER_ID){
+							$t_user = new ca_users($AUTH_CURRENT_USER_ID);
+							if ($t_user->getPrimaryKey()) {
+								$this->set("museum_id",$t_user->get('museum_id'));
+							}
+						}
+					}
 				}
 				if ($this->numErrors() > 0) {
 					foreach($this->errors() as $o_e) {
