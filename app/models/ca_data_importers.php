@@ -478,6 +478,13 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 			$va_sql_params[] = (int)$pn_table_num;
 		}
 		
+		global $AUTH_CURRENT_USER_ID;
+		$vn_user_id = caGetOption('user_id', $pa_options, $AUTH_CURRENT_USER_ID, array('castTo' => 'int'));
+			$t_user = new ca_users($vn_user_id);
+			if ($t_user->getPrimaryKey()) {
+				$va_sql_wheres[] = "(di.museum_id = 1 OR di.museum_id = ?)";
+				$va_sql_params[] = $t_user->get('museum_id');
+			}
 		
 		$vs_sql_wheres = sizeof($va_sql_wheres) ? " WHERE ".join(" AND ", $va_sql_wheres) : "";
 		
