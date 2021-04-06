@@ -11419,6 +11419,20 @@ $pa_options["display_form_field_tips"] = true;
 			$va_wheres[] = "{$vs_table_name}.deleted = 0";
 		}
 		
+		if ($this->hasField('museum_id')){
+			global $AUTH_CURRENT_USER_ID;
+			$vn_user_id = caGetOption('user_id', $pa_options, $AUTH_CURRENT_USER_ID, array('castTo' => 'int'));
+			$t_user = new ca_users($vn_user_id);
+			if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+				if (is_array($va_additional_table_wheres) && (sizeof($va_additional_table_wheres) > 0)) {
+					$va_wheres[] = ' ('.join(' AND ', $va_additional_table_wheres).') AND ('.$vs_table_name.'.museum_id = '.$t_user->get('museum_id').' OR '.$vs_table_name.'.museum_id = 1)';
+				} 
+				else {
+					$va_wheres[] = ' ('.$vs_table_name.'.museum_id = '.$t_user->get('museum_id').' OR '.$vs_table_name.'.museum_id = 1)';
+				}
+			}
+		}
+		
 		$vs_sql = "
 			SELECT {$vs_table_name}.* 
 			FROM (
