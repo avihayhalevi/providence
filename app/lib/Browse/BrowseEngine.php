@@ -1340,7 +1340,7 @@
 												{$vs_relative_to_join}
 												WHERE
 													{$vs_label_table_name}.{$vs_label_display_field} = ?";
-											//print "$vs_sql [".intval($this->opn_browse_table_num)."]<hr>";
+											
 											$qr_res = $this->opo_db->query($vs_sql, trim($va_labels[$vn_row_id]));
 										} else {
 											$vs_sql = "
@@ -2633,7 +2633,7 @@
 			$pn_start = caGetOption('start', $pa_options, 0);
 			$pn_limit = caGetOption('limit', $pa_options, null);
 
-			$va_facet_cache = $this->opo_ca_browse_cache->getFacet($ps_facet_name);
+			//$va_facet_cache = $this->opo_ca_browse_cache->getFacet($ps_facet_name);
 
 			// is facet cached?
 			$va_facet_content = null;
@@ -3034,7 +3034,7 @@
 									{$vs_where_sql}
 									LIMIT 2
 								";
-								//print "$vs_sql<hr>";
+								
 								$qr_res = $this->opo_db->query($vs_sql);
 								if ($qr_res->nextRow()) {
 									$va_counts[$vs_state_name] = (int)$qr_res->numRows();
@@ -3045,7 +3045,7 @@
 									FROM ".$vs_browse_table_name."
 									{$vs_join_sql}
 									{$vs_where_sql}";
-								//print "$vs_sql<hr>";
+								
 								$qr_res = $this->opo_db->query($vs_sql);
 								if ($qr_res->numRows() > 0) {
 									$va_facet[$vs_state_name] = array_merge($va_state_info, ['content_count' => $qr_res->numRows()]);
@@ -3203,7 +3203,7 @@
 							//museum fillter 
 							$t_user = new ca_users($vn_user_id);
 							if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
-								$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+								$va_wheres[] = $vs_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
 							}
 
 							$vs_join_sql = join("\n", $va_joins);
@@ -3221,7 +3221,7 @@
 									{$vs_where_sql}
 									LIMIT 2
 								";
-								//print "$vs_sql<hr>";
+								
 								$qr_res = $this->opo_db->query($vs_sql);
 								if ($qr_res->nextRow()) {
 									$va_counts[$vs_state_name] = (int)$qr_res->numRows();
@@ -3233,7 +3233,7 @@
 									{$vs_join_sql}
 									{$vs_where_sql}";
 									
-								//print "$vs_sql<hr>";
+								
 								$qr_res = $this->opo_db->query($vs_sql);
 								if ($qr_res->numRows() > 0) {
 									$va_facet[$vs_state_name] = array_merge($va_state_info, ['content_count' => $qr_res->numRows()]);
@@ -3370,7 +3370,7 @@
 					//museum fillter 
 					$t_user = new ca_users($vn_user_id);
 					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
-						$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+						$va_where_sql[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
 					}
 
 					$vs_join_sql = join("\n", $va_joins);
@@ -3535,7 +3535,7 @@
 					//museum fillter 
 					$t_user = new ca_users($vn_user_id);
 					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
-						$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+						$va_wheres[] = $vs_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
 					}
 
 					$vs_join_sql = join("\n", $va_joins);
@@ -3893,7 +3893,7 @@
 					//museum fillter 
 					$t_user = new ca_users($vn_user_id);
 					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
-						$va_wheres[] = $this->ops_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
+						$va_wheres[] = $vs_browse_table_name.".museum_id IN (".$t_user->get('museum_id').",1)";
 					}
 
 					$vs_join_sql = join("\n", $va_joins);
@@ -5722,7 +5722,7 @@
 					
 					$va_joins = $va_selects = $va_select_flds =  $va_wheres = $va_orderbys = [];
 
-if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) {
+				if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) {
 					$vs_cur_table = array_shift($va_path);
 
 					foreach($va_path as $vs_join_table) {
@@ -5730,7 +5730,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 						$va_joins[] = 'INNER JOIN '.$vs_join_table.' ON '.$vs_cur_table.'.'.$va_rel_info[$vs_cur_table][$vs_join_table][0][0].' = '.$vs_join_table.'.'.$va_rel_info[$vs_cur_table][$vs_join_table][0][1]."\n";
 						$vs_cur_table = $vs_join_table;
 					}
-} else {
+				} else {
 					if ($va_facet_info['show_all_when_first_facet']) {
 						$va_path = array_reverse($va_path);		// in "show_all" mode we turn the browse on it's head and grab records by the "subject" table, rather than the browse table
 						$vs_cur_table = array_shift($va_path);
@@ -5739,7 +5739,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 						$va_joins[] = 'LEFT JOIN '.$vs_join_table.' ON '.$vs_cur_table.'.'.$va_rel_info[$vs_cur_table][$vs_join_table][0][0].' = '.$vs_join_table.'.'.$va_rel_info[$vs_cur_table][$vs_join_table][0][1]."\n";
 
 					}
-}
+				}
 
 					if (is_array($va_results) && sizeof($va_results) && ($this->numCriteria() > 0)) {
 						$va_wheres[] = "(".$t_subject->tableName().'.'.$t_subject->primaryKey()." IN (".join(',', $va_results)."))";
@@ -5812,6 +5812,12 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 					}
 					if ($t_rel_item->hasField('deleted')) {
 						$va_wheres[] = "(".$t_rel_item->tableName().".deleted = 0)";
+					}
+
+					$t_user = new ca_users($vn_user_id);
+					if ($t_user->getPrimaryKey() && $t_user->get('museum_id')) {
+						$va_wheres[] = $t_item->tableName().".museum_id IN (".$t_user->get('museum_id').",1)";
+						$va_wheres[] = $t_rel_item->tableName().".museum_id IN (".$t_user->get('museum_id').",1)";
 					}
 
 					$vs_rel_pk = $t_rel_item->primaryKey();
@@ -5944,7 +5950,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 								".(sizeof($va_wheres) ? ' WHERE ' : '').join(" AND ", $va_wheres)." LIMIT 1";
 	}
 						$qr_res = $this->opo_db->query($vs_sql, $va_sql_params);
-						//print "<hr>$vs_sql<hr>\n";
+						
 
 						return ((int)$qr_res->numRows() > 0) ? true : false;
 					} else {
@@ -5965,7 +5971,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 								".(sizeof($va_orderbys) ? "ORDER BY ".join(', ', $va_orderbys) : '');
 	}                  
 	                    $vs_sql .= " GROUP BY ".join(', ', $va_select_flds);
-						//print "<hr>$vs_sql<hr>\n";
+						
 						$qr_res = $this->opo_db->query($vs_sql, $va_sql_params);
 
 						$va_facet = $va_facet_items = array();
@@ -6249,7 +6255,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							HAVING c > 1
 							LIMIT 2
 						";
-						//print "$vs_sql<hr>";
+						
 						$qr_res = $this->opo_db->query($vs_sql);
 						if ($qr_res->nextRow()) {
 							return true;
@@ -6262,7 +6268,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							{$vs_where_sql}
 							GROUP BY {$vs_browse_table_name}.{$idno_fld}
 							HAVING c > 1";
-						//print "$vs_sql<hr>";
+						
 						$qr_res = $this->opo_db->query($vs_sql);
 						while($qr_res->nextRow()) {
 							$c = $qr_res->get('c');
