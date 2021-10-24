@@ -111,6 +111,7 @@ final class ConfigurationCheck {
 		self::permissionInstallCheck();
 		self::DBLoginQuickCheck();
 		self::tmpDirQuickCheck();
+		self::uploadTmpDirQuickCheck();
 	}
 	# -------------------------------------------------------
 	private static function addError($ps_error) {
@@ -206,7 +207,7 @@ final class ConfigurationCheck {
 			}
 		}
 		if(!$vb_innodb_available){
-			self::addError(_t("Your MySQL installation doesn't support the InnoDB storage engine which is required by CollectiveAccess. For more information also see %1.","<a href='http://dev.mysql.com/doc/refman/5.1/en/innodb.html' target='_blank'>http://dev.mysql.com/doc/refman/5.1/en/innodb.html</a>"));
+			self::addError(_t("Your MySQL installation doesn't support the InnoDB storage engine which is required by CollectiveAccess."));
 		}
 
 		return true;
@@ -266,8 +267,8 @@ final class ConfigurationCheck {
 	 */
 	public static function PHPVersionQuickCheck() {
 		$va_php_version = caGetPHPVersion();
-		if($va_php_version["versionInt"]<50600){
-			self::addError(_t("CollectiveAccess requires PHP version 5.6 or higher to function properly. You're running %1. Please upgrade.",$va_php_version["version"]));
+		if($va_php_version["versionInt"]<70200){
+			self::addError(_t("CollectiveAccess requires PHP version 7.2 or higher to function properly. You're running %1. Please upgrade.",$va_php_version["version"]));
 		}
 		return true;
 	}
@@ -280,6 +281,17 @@ final class ConfigurationCheck {
 			self::addError(_t("Your setup.php file does not include a setting for __CA_SITE_PROTOCOL__. Please update it using the current setup.php-dist as a template."));
 		}
 		
+		return true;
+	}
+	# -------------------------------------------------------
+	/**
+	 * Does a temporary upload dir exist and is it writable?
+	 */
+	public static function uploadTmpDirQuickCheck() {
+		$tmp_dir = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
+		if (!file_exists($tmp_dir) || !is_writable($tmp_dir)){
+			self::addError(_t("It looks like the directory for temporary upload files is not writable by the webserver. Please change the permissions of %1 and enable the user which runs the webserver to write to this directory.",$tmp_dir));
+		}
 		return true;
 	}
 	# -------------------------------------------------------
@@ -341,16 +353,15 @@ final class ConfigurationCheck {
 	}
 	# -------------------------------------------------------
 	public static function caUrlRootQuickCheck() {
-		$vs_script_name = str_replace("\\", "/", $_SERVER["SCRIPT_NAME"]);
-		$vs_probably_correct_urlroot = str_replace("/index.php", "", $vs_script_name);
+		$possible_url_roots =  self::_urlRootGuesses();
 		
 		if (caGetOSFamily() === OS_WIN32) {	// Windows paths are case insensitive
-			if(strcasecmp($vs_probably_correct_urlroot, __CA_URL_ROOT__) != 0) {
-				self::addError(_t("It looks like the __CA_URL_ROOT__ variable in your setup.php is not set correctly. Please try to set it to &quot;%1&quot;. We came up with this suggestion because you accessed this script via &quot;&lt;your_hostname&gt;%2&quot;.",$vs_probably_correct_urlroot,$vs_script_name));
+			if(!in_array(strtolower(__CA_URL_ROOT__), array_map(function($v) { return strtolower($v); }, $possible_url_roots))) {
+				self::addError(_t("It looks like the __CA_URL_ROOT__ variable in your setup.php is not set correctly. Please try to set it to &quot;%1&quot;.",$possible_url_roots[0]));
 			}
 		} else {
-			if(!($vs_probably_correct_urlroot == __CA_URL_ROOT__)) {
-				self::addError(_t("It looks like the __CA_URL_ROOT__ variable in your setup.php is not set correctly. Please try to set it to &quot;%1&quot;. We came up with this suggestion because you accessed this script via &quot;&lt;your_hostname&gt;%2&quot;. Note that paths are case sensitive.",$vs_probably_correct_urlroot,$vs_script_name));
+			if(!in_array(__CA_URL_ROOT__, $possible_url_roots)) {
+				self::addError(_t("It looks like the __CA_URL_ROOT__ variable in your setup.php is not set correctly. Please try to set it to &quot;%1&quot;. Note that paths are case sensitive.",$possible_url_roots[0]));
 			}
 		}
 		return true;
@@ -360,19 +371,32 @@ final class ConfigurationCheck {
 	 * I suspect that the application would die before we even reach this check if the base dir is messed up?
 	 */
 	public static function caBaseDirQuickCheck() {
-		$vs_script_filename = str_replace("\\", "/", $_SERVER["SCRIPT_FILENAME"]);
-		$vs_probably_correct_base = str_replace("/index.php", "", $vs_script_filename);
+		$possible_bases = self::_baseGuesses();
 
 		if (caGetOSFamily() === OS_WIN32) {	// Windows paths are case insensitive
-			if(strcasecmp($vs_probably_correct_base, __CA_BASE_DIR__) != 0) {
-				self::addError(_t("It looks like the __CA_BASE_DIR__ variable in your setup.php is not set correctly. Please try to set it to &quot;%1&quot;. We came up with this suggestion because the location of this script is &quot;%2&quot;.",$vs_probably_correct_base,$vs_script_filename));
+			if(!in_array(strtolower(__CA_BASE_DIR__), array_map(function($v) { return strtolower($v); }, $possible_bases))) {
+				self::addError(_t("It looks like the __CA_BASE_DIR__ variable in your setup.php is not set correctly. Please try to set it to &quot;%1&quot;.",$possible_bases[0]));
 			}
 		} else {
-			if(!($vs_probably_correct_base == __CA_BASE_DIR__)) {
-				self::addError(_t("It looks like the __CA_BASE_DIR__ variable in your setup.php is not set correctly. Please try to set it to &quot;%1&quot;. We came up with this suggestion because the location of this script is &quot;%2&quot;. Note that paths are case sensitive.",$vs_probably_correct_base,$vs_script_filename));
+			if(!in_array(__CA_BASE_DIR__, $possible_bases)) {
+				self::addError(_t("It looks like the __CA_BASE_DIR__ variable in your setup.php is not set correctly. Please try to set it to &quot;%1&quot;. Note that paths are case sensitive.",$possible_bases[0]));
 			}
 		}
 		return true;
+	}
+	# -------------------------------------------------------
+	private static function _baseGuesses() {
+		return [
+			str_replace("/index.php", "", str_replace("\\", "/", $_SERVER["SCRIPT_FILENAME"])),
+			$_SERVER['SCRIPT_FILENAME'] ? pathinfo($_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME) :  join(DIRECTORY_SEPARATOR, array_slice(explode(DIRECTORY_SEPARATOR, __FILE__), 0, -3))
+		];
+	}
+	# -------------------------------------------------------
+	private static function _urlRootGuesses() {
+		return [
+			str_replace("/index.php", "", str_replace("\\", "/", $_SERVER["SCRIPT_NAME"])),
+			str_replace($_SERVER['CONTEXT_DOCUMENT_ROOT'] ?? $_SERVER['DOCUMENT_ROOT'] ?? '', '', __CA_BASE_DIR__)
+		];
 	}
 	# -------------------------------------------------------
 	public static function PHPModuleRequirementQuickCheck() {
@@ -438,6 +462,7 @@ final class ConfigurationCheck {
 	# They appear in the "configuration check" screen under manage -> system configuration.
 	# -------------------------------------------------------
 	public static function mediaDirRecursiveExpensiveCheck() {
+    if ((bool)self::$opo_config->get('dont_do_media_dir_expensive_check')) { return true;}
 		$va_dirs = self::getSubdirectoriesAsArray(self::$opo_config->get("ca_media_root_dir"));
 		$i = 0;
 		foreach($va_dirs as $vs_dir){
