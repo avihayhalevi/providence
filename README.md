@@ -1,6 +1,4 @@
-# README: Providence version 1.7.13
-
-[![Build Status](https://secure.travis-ci.org/collectiveaccess/providence.png?branch=master)](http://travis-ci.org/collectiveaccess/providence)
+# README: Providence version 1.7.17
 
 ### About CollectiveAccess
 
@@ -8,14 +6,11 @@ CollectiveAccess is a web-based suite of applications providing a framework for 
 
 CollectiveAccess is freely available under the open source GNU Public License version 3.
 
-### About CollectiveAccess 1.7.13
+### About CollectiveAccess 1.7.17
 
-Version 1.7.13 is a maintenance release with these bug fixes and minor improvements:
-* Resolve issue where when importing multiple media onto a single record via the data importer, the last imported media is tagged as primary rather than the first.
-* Resolve issue where logging into accounts with numeric login names would fail 
-* Correct various errors in database schema that would cause errors with recent versions of MariaDB
-* Bump version on selected vendor libraries due to advisories
-* Improve formatting of summary displays
+Version 1.7.17 is a maintenance release with these bug fixes and minor improvements:
+* Add option to display nested type hierarchies as indented list in menus rather than nested menus.
+* Fix fatal error in library checkout due to incorrect type checking in display template parser.
 
 Note that this version is not yet compatible with PHP version 8. Please use versions 7.3 or 7.4.
 
@@ -29,9 +24,9 @@ First make sure your server meets all of the [requirements](https://manual.colle
 
 NOTE: The update process is relatively safe and rarely, if ever, causes data loss. That said BACKUP YOUR EXISTING DATABASE AND CONFIGURATION prior to updating. You almost certainly will not need the backup, but if you do you'll be glad it's there.
 
-To update, decompress the CollectiveAccess Providence 1.7.13 tar.gz or zip file and replace the files in your existing installation with those in the update. Take care to preserve your media directory (`media/`), local configuration directory (`app/conf/local/`), any local print templates (`app/printTemplates/`) and your setup.php file.
+To update, decompress the CollectiveAccess Providence 1.7.17 tar.gz or zip file and replace the files in your existing installation with those in the update. Take care to preserve your media directory (`media/`), local configuration directory (`app/conf/local/`), any local print templates (`app/printTemplates/`) and your setup.php file.
 
-If you are updating from a version prior to 1.7, you must recreate your existing setup.php as the format has changed. Rename the existing setup.php to `setup.php-old` and copy the version 1.7.13 setup.php template in `setup.php-dist` to `setup.php`. Edit this file with your database login information, system name and other basic settings. You can reuse the settings in your existing setup.php file as-is. Only the format of setup.php has changed. If you are updating from version 1.7.x you do not need to change your setup.php file.
+If you are updating from a version prior to 1.7, you must recreate your existing setup.php as the format has changed. Rename the existing setup.php to `setup.php-old` and copy the version 1.7.17 setup.php template in `setup.php-dist` to `setup.php`. Edit this file with your database login information, system name and other basic settings. You can reuse the settings in your existing setup.php file as-is. Only the format of setup.php has changed. If you are updating from version 1.7.x you do not need to change your setup.php file.
 
 Once the updated files are in place navigate in your web browser to the login screen. You will see this message:
 
@@ -50,6 +45,17 @@ bin/caUtils reprocess-media
 Be sure to run it as a user that has write permissions on all media. You do not need to reprocess media if you are updating from a 1.7.x system.
 
 
+### Installing development versions
+
+The latest development version is always available in the `develop` branch (https://github.com/collectiveaccess/providence/tree/develop). Other feature-specific development versions are in branches prefixed with `dev/`. To install a development branch follow these steps:
+
+1. clone this repository into the location where you wish it to run using `git clone https://github.com/collectiveaccess/providence`.
+2. by default, the newly cloned repository will use the main branch, which contains code for the current release. Choose the `develop` branch by running from within the cloned repository `git checkout develop`.
+3. install the PHP package manager [Composer](https://getcomposer.org) if you do not already have it installed on your server.
+4. run `composer` from the root of the cloned repository with `composer.phar install`. This will download and install all required 3rd party software libraries. 
+5. follow the release version installation instructions to complete the installation.
+
+
 ### Useful Links
 
 * Web site: https://collectiveaccess.org
@@ -57,7 +63,8 @@ Be sure to run it as a user that has write permissions on all media. You do not 
 * Demo: https://demo.collectiveaccess.org/
 * System requirements: https://manual.collectiveaccess.org/setup/systemReq.html
 * Forum: https://www.collectiveaccess.org/support
-* Bug Tracker: https://clangers.collectiveaccess.org
+
+To report issues please use GitHub issues.
 
 
 ### Other modules

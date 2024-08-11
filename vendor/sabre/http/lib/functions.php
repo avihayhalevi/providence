@@ -331,8 +331,8 @@ function parseMimeType(string $str): array
     if (2 !== count($mimeType)) {
         // Illegal value
         var_dump($mimeType);
-        die();
-        throw new InvalidArgumentException('Not a valid mime-type: '.$str);
+        exit();
+        // throw new InvalidArgumentException('Not a valid mime-type: '.$str);
     }
     list($type, $subType) = $mimeType;
 
@@ -404,11 +404,9 @@ function decodePath(string $path): string
 function decodePathSegment(string $path): string
 {
     $path = rawurldecode($path);
-    $encoding = mb_detect_encoding($path, ['UTF-8', 'ISO-8859-1']);
 
-    switch ($encoding) {
-        case 'ISO-8859-1':
-            $path = utf8_encode($path);
+    if (!mb_check_encoding($path, 'UTF-8') && mb_check_encoding($path, 'ISO-8859-1')) {
+        $path = mb_convert_encoding($path, 'UTF-8', 'ISO-8859-1');
     }
 
     return $path;

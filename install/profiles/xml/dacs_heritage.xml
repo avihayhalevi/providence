@@ -461,14 +461,6 @@
         </label>
       </labels>
       <items>
-        <item idno="null" enabled="1" default="1">
-          <labels>
-            <label locale="en_US" preferred="1">
-              <name_singular> </name_singular>
-              <name_plural> </name_plural>
-            </label>
-          </labels>
-        </item>
         <item idno="available" enabled="1" default="0">
           <labels>
             <label locale="en_US" preferred="1">
@@ -1175,7 +1167,7 @@
         </restriction>
       </typeRestrictions>
     </metadataElement>
-    <metadataElement code="extent" datatype="Text">
+    <metadataElement code="extent_text" datatype="Text">
       <labels>
         <label locale="en_US">
           <name>Extent</name>
@@ -1219,7 +1211,7 @@
     <metadataElement code="adminbiohist" datatype="Text">
       <labels>
         <label locale="en_US">
-          <name>Administrative/Biographical History Element</name>
+          <name>Administrative/Biographical History</name>
           <description>A description of the
             context in which the materials being described were created, assembled, and/or
             maintained is as important as the description of the materials themselves</description>
@@ -2991,8 +2983,8 @@
             <placement code="ca_attribute_unitdate">
               <bundle>ca_attribute_unitdate</bundle>
             </placement>
-            <placement code="ca_attribute_extent">
-              <bundle>ca_attribute_extent</bundle>
+            <placement code="ca_attribute_extent_text">
+              <bundle>ca_attribute_extent_text</bundle>
             </placement>
              <placement code="ca_attribute_medium">
               <bundle>ca_attribute_medium</bundle>
@@ -3504,8 +3496,8 @@
             <placement code="ca_attribute_unitdate">
               <bundle>ca_attribute_unitdate</bundle>
             </placement>
-            <placement code="ca_attribute_extent">
-              <bundle>ca_attribute_extent</bundle>
+            <placement code="ca_attribute_extent_text">
+              <bundle>ca_attribute_extent_text</bundle>
             </placement>
             <placement code="ca_entities">
               <bundle>ca_entities</bundle>
@@ -4184,7 +4176,7 @@
           <labels>
             <label locale="en_US">
               <typename>has format</typename>
-              <typename_reverse>if format of</typename_reverse>
+              <typename_reverse>is format of</typename_reverse>
             </label>
           </labels>
           <subTypeLeft> </subTypeLeft>
@@ -4205,26 +4197,6 @@
             <label locale="en_US">
               <typename>has version</typename>
               <typename_reverse>is version of</typename_reverse>
-            </label>
-          </labels>
-          <subTypeLeft> </subTypeLeft>
-          <subTypeRight>event</subTypeRight>
-        </type>
-        <type code="isFormatOf" default="0">
-          <labels>
-            <label locale="en_US">
-              <typename>is format of</typename>
-              <typename_reverse>has format</typename_reverse>
-            </label>
-          </labels>
-          <subTypeLeft> </subTypeLeft>
-          <subTypeRight>event</subTypeRight>
-        </type>
-        <type code="isPartOf" default="0">
-          <labels>
-            <label locale="en_US">
-              <typename>is part of</typename>
-              <typename_reverse>contains</typename_reverse>
             </label>
           </labels>
           <subTypeLeft> </subTypeLeft>
@@ -4270,41 +4242,11 @@
           <subTypeLeft> </subTypeLeft>
           <subTypeRight>event</subTypeRight>
         </type>
-        <type code="references" default="0">
-          <labels>
-            <label locale="en_US">
-              <typename>references</typename>
-              <typename_reverse>references</typename_reverse>
-            </label>
-          </labels>
-          <subTypeLeft> </subTypeLeft>
-          <subTypeRight>event</subTypeRight>
-        </type>
         <type code="relation" default="0">
           <labels>
             <label locale="en_US">
               <typename>relation</typename>
               <typename_reverse>relation</typename_reverse>
-            </label>
-          </labels>
-          <subTypeLeft> </subTypeLeft>
-          <subTypeRight>event</subTypeRight>
-        </type>
-        <type code="replaces" default="0">
-          <labels>
-            <label locale="en_US">
-              <typename>replaces</typename>
-              <typename_reverse>replaces</typename_reverse>
-            </label>
-          </labels>
-          <subTypeLeft> </subTypeLeft>
-          <subTypeRight>event</subTypeRight>
-        </type>
-        <type code="requires" default="0">
-          <labels>
-            <label locale="en_US">
-              <typename>requires</typename>
-              <typename_reverse>requires</typename_reverse>
             </label>
           </labels>
           <subTypeLeft> </subTypeLeft>
@@ -4342,7 +4284,7 @@
           <labels>
             <label locale="en_US">
               <typename>has format</typename>
-              <typename_reverse>if format of</typename_reverse>
+              <typename_reverse>is format of</typename_reverse>
             </label>
           </labels>
           <subTypeLeft> </subTypeLeft>
@@ -4368,71 +4310,11 @@
           <subTypeLeft> </subTypeLeft>
           <subTypeRight>event</subTypeRight>
         </type>
-        <type code="isFormatOf" default="0">
-          <labels>
-            <label locale="en_US">
-              <typename>is format of</typename>
-              <typename_reverse>has format</typename_reverse>
-            </label>
-          </labels>
-          <subTypeLeft> </subTypeLeft>
-          <subTypeRight>event</subTypeRight>
-        </type>
-        <type code="isPartOf" default="0">
-          <labels>
-            <label locale="en_US">
-              <typename>is part of</typename>
-              <typename_reverse>has part</typename_reverse>
-            </label>
-          </labels>
-          <subTypeLeft> </subTypeLeft>
-          <subTypeRight>event</subTypeRight>
-        </type>
-        <type code="isReferencedBy" default="0">
-          <labels>
-            <label locale="en_US">
-              <typename>is referenced by</typename>
-              <typename_reverse>references</typename_reverse>
-            </label>
-          </labels>
-          <subTypeLeft> </subTypeLeft>
-          <subTypeRight>event</subTypeRight>
-        </type>
-        <type code="isReplacedBy" default="0">
-          <labels>
-            <label locale="en_US">
-              <typename>is replaced by</typename>
-              <typename_reverse>replaces</typename_reverse>
-            </label>
-          </labels>
-          <subTypeLeft> </subTypeLeft>
-          <subTypeRight>event</subTypeRight>
-        </type>
-        <type code="isRequiredBy" default="0">
-          <labels>
-            <label locale="en_US">
-              <typename>is required by</typename>
-              <typename_reverse>requires</typename_reverse>
-            </label>
-          </labels>
-          <subTypeLeft> </subTypeLeft>
-          <subTypeRight>event</subTypeRight>
-        </type>
-        <type code="isVersionOf" default="0">
-          <labels>
-            <label locale="en_US">
-              <typename>is version of</typename>
-              <typename_reverse>has version</typename_reverse>
-            </label>
-          </labels>
-          <subTypeLeft> </subTypeLeft>
-          <subTypeRight>event</subTypeRight>
-        </type>
         <type code="references" default="0">
           <labels>
             <label locale="en_US">
               <typename>references</typename>
-              <typename_reverse>references</typename_reverse>
+              <typename_reverse>is referenced by</typename_reverse>
             </label>
           </labels>
           <subTypeLeft> </subTypeLeft>
@@ -4452,7 +4334,7 @@
           <labels>
             <label locale="en_US">
               <typename>replaces</typename>
-              <typename_reverse>replaces</typename_reverse>
+              <typename_reverse>is replaced by</typename_reverse>
             </label>
           </labels>
           <subTypeLeft> </subTypeLeft>
@@ -4462,7 +4344,7 @@
           <labels>
             <label locale="en_US">
               <typename>requires</typename>
-              <typename_reverse>requires</typename_reverse>
+              <typename_reverse>is required by</typename_reverse>
             </label>
           </labels>
           <subTypeLeft> </subTypeLeft>
@@ -4988,7 +4870,7 @@
           <setting name="render">makeEditorLink</setting>
           <setting name="label" locale="en_US">Creator</setting>
           <setting name="delimiter">;</setting>
-          <setting name="format">^preferred_labels</setting>
+          <setting name="format">^ca_entities.preferred_labels.displayname</setting>
         </settings>
       </placement>
       <placement code="unitdate">
@@ -4997,8 +4879,8 @@
       <placement code="abstract">
         <bundle>ca_collections.abstract</bundle>
       </placement>
-      <placement code="extent">
-        <bundle>ca_collections.extent</bundle>
+      <placement code="extent_text">
+        <bundle>ca_collections.extent_text</bundle>
       </placement>
       <placement code="repository">
         <bundle>ca_collections.repository</bundle>
